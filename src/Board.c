@@ -15,6 +15,9 @@
 #include "Board.h"
 #include "Mouse.h"
 
+/**
+ * Deallo the board
+ */
 static void _destroy(Board *this)
 {
     if (NULL != this)
@@ -24,6 +27,8 @@ static void _destroy(Board *this)
             free(this->rects[i]);
             free(this->aux[i]);
         }
+        free(this->aux);
+        free(this->rects);
         free(this);
     }
 }
@@ -160,75 +165,17 @@ static int get_index(int r, int m)
 {
     return m / RECT_SIZE;
 }
-static int get_index_up(int num_squares, int y, int height)
+static int out_of_bounds(int index, int num)
 {
-    if ((y - height) < 0)
-        return -1;
-    int y_up = y - height;
-    return get_index(num_squares, y_up);
-}
-
-static int get_index_down(int num_squares, int y, int height)
-{
-    if ((y + height) >= BOARD_SIZE)
-        return -1;
-    int y_down = y + height;
-    return get_index(num_squares, y_down);
-}
-
-static int get_index_right(int num_squares, int x, int width)
-{
-    if ((x + width) >= BOARD_SIZE)
-        return -1;
-    int x_down = x + width;
-    return get_index(num_squares, x_down);
-}
-
-static int get_index_left(int num_squares, int x, int width)
-{
-    if ((x - width) < 0)
-        return -1;
-    int x_down = x - width;
-    return get_index(num_squares, x_down);
-}
-static int check_neighbor(int index_1, int **rects, int index_2, int num_squares)
-{
-    if (index_1 == -1 || index_2 == -1 || index_1 >= num_squares || index_2 >= num_squares)
-        return 0;
-    else if (rects[index_1][index_2] == 1)
+    if (index < 0 || index >= num)
         return 1;
     return 0;
 }
-static int life(int **rects, int x, int y, int num_squares)
+static int check_neighbor_(int i, int k, int **rects, int num)
 {
-    int neighbors;
-    neighbors = 0;
-
-    /* up */
-    neighbors += check_neighbor(get_index_up(num_squares, y, RECT_SIZE), rects, get_index(num_squares, x), num_squares);
-
-    /* down */
-    neighbors += check_neighbor(get_index_down(num_squares, y, RECT_SIZE), rects, get_index(num_squares, x), num_squares);
-
-    /* left */
-    neighbors += check_neighbor(get_index(num_squares, y), rects, get_index_left(num_squares, x, RECT_SIZE), num_squares);
-
-    /* right */
-    neighbors += check_neighbor(get_index(num_squares, y), rects, get_index_right(num_squares, x, RECT_SIZE), num_squares);
-
-    /* up right */
-    neighbors += check_neighbor(get_index_up(num_squares, y, RECT_SIZE), rects, get_index_right(num_squares, x, RECT_SIZE), num_squares);
-
-    /* down right */
-    neighbors += check_neighbor(get_index_down(num_squares, y, RECT_SIZE), rects, get_index_right(num_squares, x, RECT_SIZE), num_squares);
-
-    /* up left */
-    neighbors += check_neighbor(get_index_up(num_squares, y, RECT_SIZE), rects, get_index_left(num_squares, x, RECT_SIZE), num_squares);
-
-    /* down left */
-    neighbors += check_neighbor(get_index_down(num_squares, y, RECT_SIZE), rects, get_index_left(num_squares, x, RECT_SIZE), num_squares);
-
-    return neighbors;
+    if (out_of_bounds(i, num) || out_of_bounds(k, num))
+        return 0;
+    return (rects[i][k] == 1) ? 1 : 0;
 }
 static void _select_filled(Board *this, Mouse *mouse)
 {
@@ -247,26 +194,42 @@ static void _select_filled(Board *this, Mouse *mouse)
         mouse->clk_y = -1;
     }
 }
+static int life_(int **rects, int i, int k, int num)
+{
+    int neighbors;
+    neighbors = 0;
+    neighbors += check_neighbor_(i + 1, k, rects, num);
+    neighbors += check_neighbor_(i, k + 1, rects, num);
+    neighbors += check_neighbor_(i - 1, k, rects, num);
+    neighbors += check_neighbor_(i, k - 1, rects, num);
+    neighbors += check_neighbor_(i + 1, k + 1, rects, num);
+    neighbors += check_neighbor_(i - 1, k + 1, rects, num);
+    neighbors += check_neighbor_(i + 1, k - 1, rects, num);
+    neighbors += check_neighbor_(i - 1, k - 1, rects, num);
+    return neighbors;
+}
 static void _gol(Board *this)
 {
+    int three = 2;
+    int two = 1;
     for (size_t i = 0; i < this->num_x; i++)
     {
         for (size_t k = 0; k < this->num_x; k++)
         {
-            this->aux[i][k] = life(this->rects, get_cord(k, this->num_x), get_cord(i, this->num_x), this->num_x);
+            this->aux[i][k] = life_(this->rects, i, k, this->num_x);
         }
     }
     for (size_t i = 0; i < this->num_x; i++)
     {
         for (size_t k = 0; k < this->num_x; k++)
         {
-            if (this->rects[i][k] == 0 && this->aux[i][k] == 3)
+            if (this->rects[i][k] == 0 && this->aux[i][k] == three) //born
                 this->rects[i][k] = 1;
             else if (this->rects[i][k] == 1)
             {
-                if (this->aux[i][k] == 3 || this->aux[i][k] == 2)
+                if (this->aux[i][k] == three || this->aux[i][k] == two) //loved
                     this->rects[i][k] = 1;
-                else if (this->aux[i][k] > 3 || this->aux[i][k] < 2)
+                else if (this->aux[i][k] > three || this->aux[i][k] < two) //lonley/murdered
                     this->rects[i][k] = 0;
             }
         }

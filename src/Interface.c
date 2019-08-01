@@ -14,6 +14,20 @@
 #include "Board.h"
 #include "Interface.h"
 #include "Mouse.h"
+#include "Render_Q.h"
+#include "Atlas.h"
+#include "Line.h"
+
+#define controlls "Controlls, they will help you"
+#define welcome "Welcome to Life"
+
+char *con_trolls[5] = {
+    {"Random   R"},
+    {"Quit     Q"},
+    {"Clear    C"},
+    {"Start    S"},
+    {"Pause    D"}};
+
 static void _destroy(Interface *this)
 {
     if (NULL == this)
@@ -45,12 +59,28 @@ static void _cursor_logic(Interface *this, Mouse *mouse)
         i++;
     }
 }
+static Render_Q *_words(Interface *this, Render_Q *q, Atlas *atlas)
+{
+    q->enqueue(q, q->create_node(CREATE_LINE(atlas, welcome, 800, 40), render_line0));
+    int x = 780;
+    int y = 70;
+    for (int i = 0; i < 5; i++)
+    {
+        /* code */
+        q->enqueue(q, q->create_node(CREATE_LINE(atlas, con_trolls[i], x, y), render_line0));
+        y += 10;
+    }
+
+    return q;
+}
+
 Interface *interface_create()
 {
     Interface *this = malloc(sizeof(*this));
     this->cursor = _cursor;
     this->destroy = _destroy;
     this->render = _render;
+    this->words = _words;
     this->cursor_logic = _cursor_logic;
     this->color_x = 400;
     this->color_y = 800;

@@ -1,8 +1,8 @@
 #ifndef HEADER_H
 #define HEADER_H
 
-#define WINDOW_WIDTH 720
-#define WINDOW_HEIGHT 960
+#define WINDOW_WIDTH 1080
+#define WINDOW_HEIGHT 720
 #define BOARD_SIZE 720
 
 #define FPS 60
@@ -40,7 +40,8 @@ enum KEYS
     C = SDL_SCANCODE_C,
     LEFT = SDL_SCANCODE_LEFT,
     RIGHT = SDL_SCANCODE_RIGHT,
-    R = SDL_SCANCODE_R
+    R = SDL_SCANCODE_R,
+    Q = SDL_SCANCODE_Q
 } key;
 
 enum game_state

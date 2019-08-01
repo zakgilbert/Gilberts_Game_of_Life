@@ -58,6 +58,7 @@ int main(int argc, char **argv)
     {
         start_timer();
         render_q->enqueue(render_q, render_q->create_node(board, board->render));
+        render_q = ui->words(ui, render_q, atlas);
         //render_q->enqueue(render_q, render_q->create_node(ui, ui->render));
 
         // render_q->enqueue(render_q, render_q->create_node(
@@ -135,6 +136,8 @@ int main(int argc, char **argv)
                 choose_state = bigger;
             else if (key_state[R])
                 choose_state = rando;
+            else if (key_state[Q])
+                quit = 1;
             else
                 choose_state = squares;
             break;
@@ -145,10 +148,11 @@ int main(int argc, char **argv)
 
         delay();
         reset_timer();
-        SDL_Delay(10);
+        SDL_Delay(1);
     }
     atlas->destroy(atlas);
     board->destroy(board);
+    mouse->destroy(mouse);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
