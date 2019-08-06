@@ -36,13 +36,17 @@ int main(int argc, char **argv)
 
     set_up_timer();
     quit = 0;
-    grid.r = 255;
-    grid.g = 255;
-    grid.b = 255;
-    box.r = 12;
-    box.g = 69;
-    box.b = 194;
+    box.r = 255;
+    box.g = 255;
+    box.b = 255;
+    grid.r = 12;
+    grid.g = 69;
+    grid.b = 194;
+    past.r = 194;
+    past.g = 69;
+    past.b = 12;
 
+    show_grid = 1;
     Render_Q *render_q = render_q_create();
     Atlas *atlas = CREATE_ATLAS();
 
@@ -92,6 +96,10 @@ int main(int argc, char **argv)
             {
                 state = choose;
             }
+            else if (key_state[V])
+            {
+                board->add(board);
+            }
             break;
         case choose:
             switch (choose_state)
@@ -132,12 +140,17 @@ int main(int argc, char **argv)
                 choose_state = clear;
             else if (key_state[LEFT] && RECT_SIZE > 1)
                 choose_state = smaller;
-            else if (key_state[RIGHT] && RECT_SIZE < 31)
+            else if (key_state[RIGHT] && RECT_SIZE < 100)
                 choose_state = bigger;
             else if (key_state[R])
                 choose_state = rando;
             else if (key_state[Q])
                 quit = 1;
+            else if (key_state[G])
+            {
+                key_state[G] = 0;
+                show_grid = !show_grid;
+            }
             else
                 choose_state = squares;
             break;

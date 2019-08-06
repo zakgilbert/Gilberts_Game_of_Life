@@ -17,11 +17,13 @@ typedef struct _Board
     int (*clear)(struct _Board *this);
     int (*get_index)(int r, int m);
     void (*rando)(struct _Board *this);
+    void (*add)(struct _Board *this);
 
     int num_x, num_y, num_rects;
 
     int **rects;
     int **aux;
+    int **past;
 } Board;
 
 Board *board_create(int w, int h);
