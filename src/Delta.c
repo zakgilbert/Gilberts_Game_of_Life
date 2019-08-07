@@ -68,8 +68,9 @@ void reset_timer()
     }
 }
 
-void delay()
+int delay()
 {
+    frames_rendered++;
     if (nano_timer < time_per_tick)
     {
         time_delay_per_second = ((time_per_tick - nano_timer) / (SDL_GetPerformanceFrequency() * 0.001));
@@ -77,4 +78,5 @@ void delay()
         // printf("\nTimeDelayed is: %Lf", time_delay_per_second);
         //   printf("\nTimeDelayed int is: %Lf", time_delay_per_second);
     }
+    return frames_rendered;
 }

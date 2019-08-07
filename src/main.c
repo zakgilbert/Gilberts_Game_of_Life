@@ -15,6 +15,15 @@
 #include "Board.h"
 #include "Mouse.h"
 #include "Interface.h"
+#include "Sprite.h"
+
+static int set_full_screen(int full_screen, SDL_Window *window)
+{
+    if (full_screen)
+        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+    else
+        SDL_SetWindowFullscreen(window, 0);
+}
 
 int main(int argc, char **argv)
 {
@@ -31,8 +40,8 @@ int main(int argc, char **argv)
     struct SDL_Renderer *renderer = NULL;
     window = make_window("Window");
     renderer = make_renderer(&window);
-    // SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
-    // SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
+    SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     set_up_timer();
     quit = 0;
@@ -48,7 +57,7 @@ int main(int argc, char **argv)
 
     show_grid = 1;
     Render_Q *render_q = render_q_create();
-    Atlas *atlas = CREATE_ATLAS();
+    Atlas *atlas = CREATE_ATLAS(150);
 
     Board *board = board_create(RECT_SIZE, RECT_SIZE);
     Mouse *mouse = mouse_create(RECT_SIZE);
@@ -58,6 +67,8 @@ int main(int argc, char **argv)
     state = choose;
     choose_state = squares;
     union SDL_Event ev;
+    int frames_renderered = 0;
+    int full_screen = 0;
     while (!quit)
     {
         start_timer();
@@ -146,6 +157,12 @@ int main(int argc, char **argv)
                 choose_state = rando;
             else if (key_state[Q])
                 quit = 1;
+            else if (key_state[F])
+            {
+                full_screen = !full_screen;
+                key_state[F] = 0;
+                set_full_screen(full_screen, window);
+            }
             else if (key_state[G])
             {
                 key_state[G] = 0;
@@ -159,7 +176,7 @@ int main(int argc, char **argv)
             break;
         }
 
-        delay();
+        frames_renderered = delay();
         reset_timer();
         SDL_Delay(1);
     }

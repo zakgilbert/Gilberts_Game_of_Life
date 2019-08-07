@@ -20,13 +20,34 @@
 
 #define controlls "Controlls, they will help you"
 #define welcome "Welcome to Life"
+#define running "Game is Running"
+#define paused "Game is Paused"
 
-char *con_trolls[5] = {
-    {"Random   R"},
-    {"Quit     Q"},
-    {"Clear    C"},
-    {"Start    S"},
-    {"Pause    D"}};
+const char *rules[13] = {
+    "In conways universe survival",
+    "is defined as follows.",
+    "    1. A living cell with two",
+    "       or three neighbors",
+    "       continues its life.",
+    "    2. A living cell with less",
+    "       than two neighbors dies",
+    "       of lonleness.",
+    "    3. A living cell with more",
+    "       than three neighbors",
+    "       dies of overcrowdedness.",
+    "    4. A dead cell with three",
+    "       neighbors is given life."};
+const char *
+    con_trolls_letters[8] = {"R", "Q", "C", "S", "D", "F", "Left", "Right"};
+const char *con_trolls_words[8] = {
+    "Random",
+    "Quit",
+    "Clear",
+    "Start",
+    "Pause",
+    "Full Screen",
+    "Increase Size",
+    "Decrease Size"};
 
 static void _destroy(Interface *this)
 {
@@ -61,16 +82,28 @@ static void _cursor_logic(Interface *this, Mouse *mouse)
 }
 static Render_Q *_words(Interface *this, Render_Q *q, Atlas *atlas)
 {
-    q->enqueue(q, q->create_node(CREATE_LINE(atlas, welcome, 800, 40), render_line0));
-    int x = 780;
+    q->enqueue(q, q->create_node(CREATE_LINE(atlas, welcome, 700, 40, 2), render_line0));
+    int x = 680;
     int y = 70;
-    for (int i = 0; i < 5; i++)
+    int x_let = x + 200;
+    for (int i = 0; i < 8; i++)
     {
         /* code */
-        q->enqueue(q, q->create_node(CREATE_LINE(atlas, con_trolls[i], x, y), render_line0));
-        y += 10;
+        q->enqueue(q, q->create_node(CREATE_LINE(atlas, con_trolls_words[i], x, y, 2), render_line0));
+        q->enqueue(q, q->create_node(CREATE_LINE(atlas, con_trolls_letters[i], x_let, y, 2), render_line0));
+        y += 20;
     }
+    if (state == choose)
+        q->enqueue(q, q->create_node(CREATE_LINE(atlas, paused, 700, y + 50, 2), render_line0));
+    else
+        q->enqueue(q, q->create_node(CREATE_LINE(atlas, running, 700, y + 50, 2), render_line0));
 
+    y += 90;
+    for (int k = 0; k < 13; k++)
+    {
+        q->enqueue(q, q->create_node(CREATE_LINE(atlas, rules[k], 650, y, 2), render_line0));
+        y += 20;
+    }
     return q;
 }
 

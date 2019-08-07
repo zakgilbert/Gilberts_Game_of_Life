@@ -295,7 +295,7 @@ static void _gol(Board *this)
     {
         for (size_t k = 0; k < this->num_x; k++)
         {
-            if (this->rects[i][k] == 0 && (this->aux[i][k] == three || this->aux[i][k] == 4)) //born
+            if (this->rects[i][k] == 0 && (this->aux[i][k] == three || this->aux[i][k] == 9)) //born
             {
                 this->rects[i][k] = 1;
                 this->past[i][k]++;

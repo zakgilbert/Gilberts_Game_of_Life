@@ -29,18 +29,18 @@ static void _render_letter(struct SDL_Renderer *renderer, struct SDL_Texture *te
 struct SDL_Texture *_get_texture(Line *this, int i)
 {
     struct Alpha_Node *item = this->atlas->search(this->atlas, this->letters[i]->letter);
-
+    int inc = this->inc;
     this->letters[i]->rect.x = this->x;
     this->letters[i]->rect.w = item->rect.w;
     this->letters[i]->rect.h = item->rect.h;
     this->x += item->rect.w + 1;
 
     if ((strcmp(item->key, "g") == 0) || (strcmp(item->key, "q") == 0) || (strcmp(item->key, "j") == 0) || (strcmp(item->key, "y")) == 0)
-        this->letters[i]->rect.y = this->y + 3;
+        this->letters[i]->rect.y = this->y + 3 * inc;
     else if ((strcmp(item->key, "i") == 0))
-        this->letters[i]->rect.y = this->y + 1;
-    else if (item->rect.h < 8 && (strcmp(item->key, "h") != 0))
-        this->letters[i]->rect.y = this->y + 2;
+        this->letters[i]->rect.y = this->y + 1 * inc;
+    else if (item->rect.h < (8 * inc) && (strcmp(item->key, "h") != 0))
+        this->letters[i]->rect.y = this->y + 2 * inc;
     else
         this->letters[i]->rect.y = this->y;
     return item->texture;
@@ -74,7 +74,7 @@ static void _destroy(Line *this)
         this = NULL;
     }
 }
-Line *CREATE_LINE(Atlas *atlas, const char *line, int x, int y)
+Line *CREATE_LINE(Atlas *atlas, const char *line, int x, int y, int inc)
 {
     Line *this = malloc(sizeof(*this));
     this->destroy = _destroy;
@@ -86,6 +86,7 @@ Line *CREATE_LINE(Atlas *atlas, const char *line, int x, int y)
     this->line = line;
     this->x = x;
     this->y = y;
+    this->inc = inc;
     this->num_let = strlen(this->line);
     this->letters = calloc(this->num_let, sizeof(struct Letter *));
     this->set_letters(this);

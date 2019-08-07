@@ -5,7 +5,7 @@
 void set_up_timer();
 void start_timer();
 void reset_timer();
-void delay();
+int delay();
 void print_time_delay();
 int check_delta();
 void update_delta();

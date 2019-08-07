@@ -23,10 +23,11 @@ typedef struct _Line
     const char *line;
     int *r_x, *r_y;
     int x, y;
+    int inc;
 
 } Line;
 
-Line *CREATE_LINE(Atlas *atlas, const char *line, int x, int y);
+Line *CREATE_LINE(Atlas *atlas, const char *line, int x, int y, int inc);
 struct Letter *NEW_LETTER(const char *letter, int x, int y);
 void render_line0(void *obj, SDL_Renderer *renderer);
 void destroy_line(void *obj);
