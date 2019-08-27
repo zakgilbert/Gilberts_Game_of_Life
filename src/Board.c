@@ -51,12 +51,18 @@ static void _render(void *obj, struct SDL_Renderer *renderer)
         {
             if (this->rects[i][k] == 1)
             {
-                SDL_SetRenderDrawColor(renderer, box.r, box.g, box.b, 0);
+                SDL_SetRenderDrawColor(renderer, cyan.r, cyan.g, cyan.b, 0);
                 SDL_RenderFillRect(renderer, &r);
             }
-            else if (show_grid)
+
+            else if (this->rects[i][k] == 2)
             {
-                SDL_SetRenderDrawColor(renderer, grid.r, grid.g, grid.b, 0);
+                SDL_SetRenderDrawColor(renderer, red.r, red.g, red.b, 0);
+                SDL_RenderFillRect(renderer, &r);
+            }
+            else if (this->rects[i][k] == 0)
+            {
+                SDL_SetRenderDrawColor(renderer, grey.r, grey.g, grey.b, 0);
                 SDL_RenderDrawRect(renderer, &r);
             }
             r.x += r.w;
@@ -190,7 +196,7 @@ static int check_neighbor_(int i, int k, int **rects, int num)
     if (out_of_bounds(i, num) || out_of_bounds(k, num))
         return 0;
     else if (rects[i][k] == 2)
-        return 1;
+        return 0;
     return (rects[i][k] == 1) ? 1 : 0;
 }
 static void _select_filled(Board *this, Mouse *mouse)
@@ -223,6 +229,38 @@ static int life_(int **rects, int i, int k, int num)
     neighbors += check_neighbor_(i + 1, k - 1, rects, num);
     neighbors += check_neighbor_(i - 1, k - 1, rects, num);
     return neighbors;
+}
+static int brain(int **rects, int i, int k, int num)
+{
+}
+static void _brians(Board *this)
+{
+    for (size_t i = 0; i < this->num_x; i++)
+    {
+        for (size_t k = 0; k < this->num_x; k++)
+        {
+            this->aux[i][k] = life_(this->rects, i, k, this->num_x);
+        }
+    }
+    for (size_t i = 0; i < this->num_x; i++)
+    {
+        for (size_t k = 0; k < this->num_x; k++)
+        {
+            if (this->rects[i][k] == 0 && (this->aux[i][k] == 2)) //born
+            {
+                this->rects[i][k] = 1;
+                this->past[i][k]++;
+            }
+            else if (this->rects[i][k] == 1)
+            {
+                this->rects[i][k] = 2;
+            }
+            else if (this->rects[i][k] == 2)
+            {
+                this->rects[i][k] = 0;
+            }
+        }
+    }
 }
 static void _gol(Board *this)
 {
@@ -265,6 +303,7 @@ Board *board_create(int w, int h)
     this->set_rects = _set_rects;
     this->select_filled = _select_filled;
     this->gol = _gol;
+    this->brians = _brians;
     this->clear = _clear;
     this->get_index = _get_index;
     this->rando = _rando;

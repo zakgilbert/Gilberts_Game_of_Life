@@ -23,20 +23,27 @@ int quit;
 extern Uint8 *key_state;
 Uint8 *key_state;
 
-extern int show_grid;
-int show_grid;
+extern int show_box;
+int show_box;
 
 extern int X;
 extern int Y;
 int X;
 int Y;
 
-extern SDL_Color grid;
-extern SDL_Color box;
+extern SDL_Color blue;
+extern SDL_Color white;
 extern SDL_Color past;
-SDL_Color grid;
-SDL_Color box;
+extern SDL_Color red;
+extern SDL_Color grey;
+extern SDL_Color cyan;
+
+SDL_Color blue;
+SDL_Color white;
 SDL_Color past;
+SDL_Color red;
+SDL_Color grey;
+SDL_Color cyan;
 
 enum KEYS
 {
@@ -49,14 +56,22 @@ enum KEYS
     Q = SDL_SCANCODE_Q,
     G = SDL_SCANCODE_G,
     V = SDL_SCANCODE_V,
-    F = SDL_SCANCODE_F
+    F = SDL_SCANCODE_F,
+    B = SDL_SCANCODE_B
 } key;
 
 enum game_state
 {
     choose,
-    gol
+    gol,
+    brian
 } state;
+
+enum current_game
+{
+    con,
+    bri
+} CURRENT_GAME;
 enum UI_states
 {
     squares,
@@ -64,7 +79,8 @@ enum UI_states
     bigger,
     start,
     clear,
-    rando
+    rando,
+    change
 } choose_state;
 
 #endif

@@ -22,6 +22,7 @@
 #define welcome "Welcome to Life"
 #define running "Game is Running"
 #define paused "Game is Paused"
+#define brians "Welcome to Brians Brain"
 
 const char *rules[13] = {
     "In conways universe survival",
@@ -85,7 +86,11 @@ static Render_Q *_words(Interface *this, Render_Q *q, Atlas *atlas)
     int x = BOARD_SIZE + 150;
     int y = 70;
     int x_let = x + 200;
-    q->enqueue(q, q->create_node(CREATE_LINE(atlas, welcome, x + 60, 40, 2), render_line));
+    if (CURRENT_GAME == con)
+        q->enqueue(q, q->create_node(CREATE_LINE(atlas, welcome, x + 60, 40, 2), render_line));
+    else
+        q->enqueue(q, q->create_node(CREATE_LINE(atlas, brians, x + 60, 40, 2), render_line));
+
     for (int i = 0; i < 8; i++)
     {
         q->enqueue(q, q->create_node(CREATE_LINE(atlas, con_trolls_words[i], x, y, 2), render_line));

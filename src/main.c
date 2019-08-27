@@ -15,26 +15,32 @@
 #include "Board.h"
 #include "Mouse.h"
 #include "Interface.h"
-
+static SDL_Color set_color(int r, int g, int b)
+{
+    SDL_Color color = {r, g, b};
+    return color;
+}
 static void set_globals()
 {
     RECT_SIZE = BLOCK;
     key_state = (Uint8 *)SDL_GetKeyboardState(NULL);
     quit = 0;
-    box.r = 255;
-    box.g = 255;
-    box.b = 255;
-    grid.r = 12;
-    grid.g = 69;
-    grid.b = 194;
-    past.r = 194;
-    past.g = 69;
-    past.b = 12;
 
-    show_grid = 1;
+    white = set_color(255, 255, 255);
+
+    blue = set_color(12, 69, 194);
+
+    red = set_color(145, 19, 12);
+
+    grey = set_color(23, 23, 23);
+
+    cyan = set_color(39, 145, 144);
+    show_box = 1;
 
     state = choose;
     choose_state = squares;
+
+    CURRENT_GAME = con;
 }
 static void set_full_screen(int full_screen, SDL_Window *window)
 {
@@ -76,14 +82,9 @@ int main(int argc, char **argv)
     while (!quit)
     {
         start_timer();
+
         render_q->enqueue(render_q, render_q->create_node(board, board->render));
         render_q = ui->words(ui, render_q, atlas);
-        //render_q->enqueue(render_q, render_q->create_node(ui, ui->render));
-
-        // render_q->enqueue(render_q, render_q->create_node(
-        //                                 CREATE_LINE(atlas,
-        //                                             player_2->get_score(player_2), WINDOW_WIDTH - 275, 50),
-        //                                 render_line0));
 
         SDL_RenderClear(renderer);
         render_q = render_q->execute(render_q, renderer);
@@ -104,9 +105,19 @@ int main(int argc, char **argv)
         {
 
         case gol:
-            board->gol(board);
-            /*
-             */
+            switch (CURRENT_GAME)
+            {
+            case con:
+                board->gol(board);
+                break;
+
+            case bri:
+                board->brians(board);
+                break;
+            default:
+                break;
+            }
+
             if (key_state[D])
             {
                 state = choose;
@@ -146,6 +157,15 @@ int main(int argc, char **argv)
                 board->clear(board);
                 board->rando(board);
                 break;
+            case change:
+                if (CURRENT_GAME == bri)
+                {
+                    CURRENT_GAME = con;
+                    board->clear(board);
+                }
+                else
+                    CURRENT_GAME++;
+                break;
             default:
                 break;
             }
@@ -170,8 +190,14 @@ int main(int argc, char **argv)
             else if (key_state[G])
             {
                 key_state[G] = 0;
-                show_grid = !show_grid;
+                show_box = !show_box;
             }
+            else if (key_state[B])
+            {
+                key_state[B] = 0;
+                choose_state = change;
+            }
+
             else
                 choose_state = squares;
             break;

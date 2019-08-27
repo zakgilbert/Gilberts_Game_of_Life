@@ -14,6 +14,7 @@ typedef struct _Board
     void (*set_rects)(struct _Board *this);
     void (*select_filled)(struct _Board *this, Mouse *mouse);
     void (*gol)(struct _Board *this);
+    void (*brians)(struct _Board *this);
     int (*clear)(struct _Board *this);
     int (*get_index)(int r, int m);
     void (*rando)(struct _Board *this);
