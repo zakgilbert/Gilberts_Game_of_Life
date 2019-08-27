@@ -34,8 +34,6 @@ typedef struct _Render_Q
     /* Pops nodes one by one as the function pointers that the node contains are called */
     struct _Render_Q *(*execute)(struct _Render_Q *this, struct SDL_Renderer *renderer);
 
-    /* Prints addresses of all nodes in queue */
-    void (*print)(struct _Render_Q *this);
 
     struct Node *front;
     struct Node *tail;

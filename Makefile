@@ -14,7 +14,6 @@ CFLAGS := -Wall -ggdb3
 
 LDFLAGS := `sdl2-config --libs --cflags` -lSDL2_image -lm
 
-
 all: $(EXCEC)
 
 $(EXCEC) : buildrepo $(OBJS)

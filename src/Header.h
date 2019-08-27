@@ -1,9 +1,9 @@
 #ifndef HEADER_H
 #define HEADER_H
 
-#define WINDOW_WIDTH 1080
-#define WINDOW_HEIGHT 600
-#define BOARD_SIZE 600
+#define WINDOW_WIDTH 1920
+#define WINDOW_HEIGHT 1080
+#define BOARD_SIZE 1000
 
 #define FPS 60
 

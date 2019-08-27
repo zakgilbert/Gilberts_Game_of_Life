@@ -11,6 +11,7 @@
 #include <SDL2/SDL_image.h>
 #include "Render_Q.h"
 
+/* Frees all nodes in queue as well as the queue itself */
 static void _destroy(Render_Q *this)
 {
     struct Node *temp;
@@ -25,17 +26,8 @@ static void _destroy(Render_Q *this)
     }
     free(this);
 }
-static void _print(Render_Q *this)
-{
-    struct Node *current;
-    current = this->front;
 
-    while (NULL != current)
-    {
-        current = current->next;
-    }
-    printf("\n");
-}
+/* Creates and returns a heap allocated Node pointer */
 static struct Node *_create_node(void *obj, render_function target)
 {
     struct Node *data;
@@ -47,6 +39,8 @@ static struct Node *_create_node(void *obj, render_function target)
 
     return data;
 }
+
+/* Adds a new node to queue */
 static void _enqueue(Render_Q *this, struct Node *node)
 {
     if (NULL == this->tail)
@@ -59,6 +53,15 @@ static void _enqueue(Render_Q *this, struct Node *node)
     this->tail = node;
 }
 
+/* Removes front node from queue */
+static struct Node *_pop(Render_Q *this)
+{
+    struct Node *temp = this->front;
+    this->front = this->front->next;
+    return temp;
+}
+
+/* Pops nodes one by one as the function pointers that the node contains are called */
 static Render_Q *_execute(Render_Q *this, struct SDL_Renderer *renderer)
 {
     struct Node *temp;
@@ -74,12 +77,6 @@ static Render_Q *_execute(Render_Q *this, struct SDL_Renderer *renderer)
     return render_q_create();
 }
 
-static struct Node *_pop(Render_Q *this)
-{
-    struct Node *temp = this->front;
-    this->front = this->front->next;
-    return temp;
-}
 Render_Q *render_q_create()
 {
     Render_Q *this = malloc(sizeof(*this));
@@ -87,7 +84,6 @@ Render_Q *render_q_create()
     this->destroy = _destroy;
     this->create_node = _create_node;
     this->enqueue = _enqueue;
-    this->print = _print;
     this->pop = _pop;
     this->execute = _execute;
 
