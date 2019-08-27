@@ -13,6 +13,9 @@
 #include "Header.h"
 #include "Atlas.h"
 
+/**
+ * Return a new struct Letter
+ */
 struct Letter *NEW_LETTER(const char *letter, int x, int y)
 {
     struct Letter *new_letter = malloc(sizeof(struct Letter));
@@ -21,11 +24,36 @@ struct Letter *NEW_LETTER(const char *letter, int x, int y)
     new_letter->rect.y = y;
     return new_letter;
 }
+
+/* Free memory allocated for Line object */
+static void _destroy(Line *this)
+{
+    int i;
+
+    if (NULL != this)
+    {
+        for (i = 0; i < this->num_let - 1; i++)
+        {
+            if (NULL != this->letters[i])
+                free(this->letters[i]);
+        }
+
+        free(this->letters);
+        this->letters = NULL;
+        free(this);
+        this = NULL;
+    }
+}
+
+/* Render letter is called in render_line which is a function to be sent to the render_q*/
 static void _render_letter(struct SDL_Renderer *renderer, struct SDL_Texture *texture, struct SDL_Rect *rect)
 {
     SDL_RenderCopy(renderer, texture, NULL, rect);
 }
 
+/**
+ * Sets the correct x and y coords to a letter.
+ */
 struct SDL_Texture *_get_texture(Line *this, int i)
 {
     struct Alpha_Node *item = this->atlas->search(this->atlas, this->letters[i]->letter);
@@ -45,6 +73,10 @@ struct SDL_Texture *_get_texture(Line *this, int i)
         this->letters[i]->rect.y = this->y;
     return item->texture;
 }
+
+/**
+ * Adds the letters to the line.
+ */
 static void _set_letters(Line *this)
 {
     int i = 0;
@@ -54,24 +86,6 @@ static void _set_letters(Line *this)
         buff[0] = this->line[i];
         this->letters[i] = NEW_LETTER(buff, this->x, this->y);
         this->letters[i]->texture = this->get_texture(this, i);
-    }
-}
-static void _destroy(Line *this)
-{
-    int i;
-    if (NULL != this)
-    {
-        for (i = 0; i < this->num_let - 1; i++)
-        {
-            if (NULL != this->letters[i])
-            {
-                free(this->letters[i]);
-            }
-        }
-        free(this->letters);
-        this->letters = NULL;
-        free(this);
-        this = NULL;
     }
 }
 Line *CREATE_LINE(Atlas *atlas, const char *line, int x, int y, int inc)
@@ -93,7 +107,7 @@ Line *CREATE_LINE(Atlas *atlas, const char *line, int x, int y, int inc)
 
     return this;
 }
-void render_line0(void *obj, struct SDL_Renderer *renderer)
+void render_line(void *obj, struct SDL_Renderer *renderer)
 {
     int i;
     Line *this = (Line *)obj;

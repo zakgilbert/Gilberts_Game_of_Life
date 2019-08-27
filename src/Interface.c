@@ -85,22 +85,22 @@ static Render_Q *_words(Interface *this, Render_Q *q, Atlas *atlas)
     int x = BOARD_SIZE + 150;
     int y = 70;
     int x_let = x + 200;
-    q->enqueue(q, q->create_node(CREATE_LINE(atlas, welcome, x + 60, 40, 2), render_line0));
+    q->enqueue(q, q->create_node(CREATE_LINE(atlas, welcome, x + 60, 40, 2), render_line));
     for (int i = 0; i < 8; i++)
     {
-        q->enqueue(q, q->create_node(CREATE_LINE(atlas, con_trolls_words[i], x, y, 2), render_line0));
-        q->enqueue(q, q->create_node(CREATE_LINE(atlas, con_trolls_letters[i], x_let, y, 2), render_line0));
+        q->enqueue(q, q->create_node(CREATE_LINE(atlas, con_trolls_words[i], x, y, 2), render_line));
+        q->enqueue(q, q->create_node(CREATE_LINE(atlas, con_trolls_letters[i], x_let, y, 2), render_line));
         y += 20;
     }
     if (state == choose)
-        q->enqueue(q, q->create_node(CREATE_LINE(atlas, paused, x + 60, y + 50, 2), render_line0));
+        q->enqueue(q, q->create_node(CREATE_LINE(atlas, paused, x + 60, y + 50, 2), render_line));
     else
-        q->enqueue(q, q->create_node(CREATE_LINE(atlas, running, x + 60, y + 50, 2), render_line0));
+        q->enqueue(q, q->create_node(CREATE_LINE(atlas, running, x + 60, y + 50, 2), render_line));
 
     y += 90;
     for (int k = 0; k < 13; k++)
     {
-        q->enqueue(q, q->create_node(CREATE_LINE(atlas, rules[k], x + 10, y, 2), render_line0));
+        q->enqueue(q, q->create_node(CREATE_LINE(atlas, rules[k], x + 10, y, 2), render_line));
         y += 20;
     }
     return q;
