@@ -9,6 +9,7 @@
 #include "Window_and_Renderer.h"
 #include "Header.h"
 
+/* Create and return an SDL window object */
 SDL_Window *make_window(char *name)
 {
     struct SDL_Window *window = NULL;
@@ -21,6 +22,7 @@ SDL_Window *make_window(char *name)
     return window;
 }
 
+/* Create and return and SDL renderer */
 SDL_Renderer *make_renderer(SDL_Window **window)
 {
     Uint32 render_flags;
@@ -37,6 +39,7 @@ SDL_Renderer *make_renderer(SDL_Window **window)
     return renderer;
 }
 
+/* Create a texture from an image file and a pointer to be referenced during rendering */
 struct SDL_Texture *create_texture(struct SDL_Renderer *renderer, const char *path, struct SDL_Rect *rect)
 {
     struct SDL_Texture *texture = NULL;

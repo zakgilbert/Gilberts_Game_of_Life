@@ -15,9 +15,8 @@
 #include "Board.h"
 #include "Mouse.h"
 #include "Interface.h"
-#include "Sprite.h"
 
-static int set_full_screen(int full_screen, SDL_Window *window)
+static void set_full_screen(int full_screen, SDL_Window *window)
 {
     if (full_screen)
         SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
