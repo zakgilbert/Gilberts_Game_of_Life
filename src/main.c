@@ -16,6 +16,26 @@
 #include "Mouse.h"
 #include "Interface.h"
 
+static void set_globals()
+{
+    RECT_SIZE = BLOCK;
+    key_state = (Uint8 *)SDL_GetKeyboardState(NULL);
+    quit = 0;
+    box.r = 255;
+    box.g = 255;
+    box.b = 255;
+    grid.r = 12;
+    grid.g = 69;
+    grid.b = 194;
+    past.r = 194;
+    past.g = 69;
+    past.b = 12;
+
+    show_grid = 1;
+
+    state = choose;
+    choose_state = squares;
+}
 static void set_full_screen(int full_screen, SDL_Window *window)
 {
     if (full_screen)
@@ -32,8 +52,6 @@ int main(int argc, char **argv)
         printf("error creating renderer: %s\n", SDL_GetError());
         return 1;
     }
-    RECT_SIZE = BLOCK;
-    key_state = (Uint8 *)SDL_GetKeyboardState(NULL);
     srand(time(0));
     struct SDL_Window *window = NULL;
     struct SDL_Renderer *renderer = NULL;
@@ -43,18 +61,7 @@ int main(int argc, char **argv)
     SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     set_up_timer();
-    quit = 0;
-    box.r = 255;
-    box.g = 255;
-    box.b = 255;
-    grid.r = 12;
-    grid.g = 69;
-    grid.b = 194;
-    past.r = 194;
-    past.g = 69;
-    past.b = 12;
-
-    show_grid = 1;
+    set_globals();
     Render_Q *render_q = render_q_create();
     Atlas *atlas = CREATE_ATLAS(150);
 
@@ -63,8 +70,6 @@ int main(int argc, char **argv)
     Interface *ui = interface_create();
 
     atlas->map(atlas, renderer);
-    state = choose;
-    choose_state = squares;
     union SDL_Event ev;
     int frames_renderered = 0;
     int full_screen = 0;

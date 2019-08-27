@@ -16,7 +16,7 @@
 #include "Mouse.h"
 
 /**
- * Deallo the board
+ * Free allocated memory the board
  */
 static void _destroy(Board *this)
 {
@@ -146,7 +146,6 @@ static void _add(Board *this)
 static void _set_rects(Board *this)
 {
     int even = 0;
-    int pat = 2;
     this->rects = malloc(sizeof(int *) * this->num_x);
     this->aux = malloc(sizeof(int *) * this->num_x);
     this->past = malloc(sizeof(int *) * this->num_x);
@@ -167,66 +166,11 @@ static void _set_rects(Board *this)
                 this->rects[i][k] = 0;
                 this->aux[i][k] = 0;
             }
-            /*
-            if (even)
-            {
-                if (k % pat == 0)
-                {
-
-                    this->rects[i][k] = 1;
-                    this->aux[i][k] = 1;
-                    this->past[i][k] = 1;
-                }
-                else
-                {
-                    this->rects[i][k] = 0;
-                    this->aux[i][k] = 0;
-                    this->past[i][k] = 0;
-                }
-            }
-            else if (!even)
-            {
-                if (k % pat == 0)
-                {
-
-                    this->rects[i][k] = 0;
-                    this->aux[i][k] = 0;
-                    this->past[i][k] = 0;
-                }
-                else
-                {
-                    this->rects[i][k] = 1;
-                    this->aux[i][k] = 1;
-                    this->past[i][k] = 1;
-                }
-            }
-            if (((this->num_x / 2 + i) == k) || ((this->num_x / 2 - i) == k))
-            {
-                this->rects[i][k] = 1;
-                this->aux[i][k] = 1;
-                this->past[i][k] = 1;
-            }
-            else if (((this->num_x / 2 + k) == i) || ((this->num_x / 2 - k) == i))
-           {
-                this->rects[i][k] = 1;
-                this->aux[i][k] = 1;
-                this->past[i][k] = 1;
-           } 
-            else
-            {
-                this->rects[i][k] = 0;
-                this->aux[i][k] = 0;
-                this->past[i][k] = 0;
-            }
-         */
         }
         even = !even;
     }
 }
-static int get_cord(int index, int num_sqrs)
-{
-    return index * RECT_SIZE;
-}
+
 static int _get_index(int r, int m)
 {
     return m / RECT_SIZE;
