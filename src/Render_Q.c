@@ -18,12 +18,12 @@ static void _destroy(Render_Q *this)
 
     if (NULL == this)
         return;
-    while (NULL != this->front)
-    {
+    while (NULL != this->front) {
         temp = this->front;
         this->front = this->front->next;
         free(temp);
     }
+
     free(this);
 }
 
@@ -43,12 +43,12 @@ static struct Node *_create_node(void *obj, render_function target)
 /* Adds a new node to queue */
 static void _enqueue(Render_Q *this, struct Node *node)
 {
-    if (NULL == this->tail)
-    {
+    if (NULL == this->tail) {
         this->front = node;
         this->tail = node;
         return;
     }
+
     this->tail->next = node;
     this->tail = node;
 }
@@ -67,12 +67,12 @@ static Render_Q *_execute(Render_Q *this, struct SDL_Renderer *renderer)
     struct Node *temp;
     temp = NULL;
 
-    while (NULL != this->front)
-    {
+    while (NULL != this->front) {
         temp = this->pop(this);
         (*temp->func)(temp->obj, renderer);
         free(temp);
     }
+
     this->destroy(this);
     return render_q_create();
 }
