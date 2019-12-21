@@ -15,10 +15,38 @@
 #include "Board.h"
 #include "Mouse.h"
 #include "Interface.h"
+int color_decre = 1;
+int rules_gol[6] = {1, 0, 3, 3, 2, 3};
+int rules_bugs[6] = {5, 1, 34, 45, 34, 58};
+int rules_bugs_movie[6] = {10, 1, 123, 170, 123, 212};
+int rules_gnarl[6] = {8, 0, 74, 252, 163, 223};
 static SDL_Color set_color(int r, int g, int b)
 {
     SDL_Color color = {r, g, b};
     return color;
+}
+static void adjust_color(int frames_rendered)
+{
+    int col = grey.r;
+    if (col < 23)
+        color_decre = 1;
+    else if (col > 34)
+        color_decre = 0;
+    if (frames_rendered % 2 == 0)
+    {
+        if (color_decre == 1)
+        {
+            grey.r++;
+            grey.g++;
+            grey.b++;
+        }
+        else if (color_decre == 0)
+        {
+            grey.r--;
+            grey.g--;
+            grey.b--;
+        }
+    }
 }
 static void set_globals()
 {
@@ -30,11 +58,16 @@ static void set_globals()
 
     blue = set_color(12, 69, 194);
 
+    space_blue = set_color(1, 2, 10);
+
     red = set_color(145, 19, 12);
 
     grey = set_color(23, 23, 23);
 
     cyan = set_color(39, 145, 144);
+
+    gold = set_color(232, 165, 9);
+
     show_box = 1;
 
     state = choose;
@@ -108,16 +141,18 @@ int main(int argc, char **argv)
             switch (CURRENT_GAME)
             {
             case con:
-                board->gol(board);
+                board->bugs(board, rules_gol);
                 break;
-
             case bri:
                 board->brians(board);
+                break;
+            case bug:
+                board->bugs(board, rules_bugs);
                 break;
             default:
                 break;
             }
-
+            adjust_color(frames_renderered);
             if (key_state[D])
             {
                 state = choose;
@@ -164,7 +199,9 @@ int main(int argc, char **argv)
                     board->clear(board);
                 }
                 else
+                {
                     CURRENT_GAME++;
+                }
                 break;
             default:
                 break;
@@ -208,7 +245,6 @@ int main(int argc, char **argv)
 
         frames_renderered = delay();
         reset_timer();
-        SDL_Delay(1);
     }
     atlas->destroy(atlas);
     board->destroy(board);

@@ -34,7 +34,6 @@ static void _destroy(Board *this)
         free(this);
     }
 }
-
 /**
  * - Render the board
  * - This is a render function
@@ -44,14 +43,14 @@ static void _render(void *obj, struct SDL_Renderer *renderer)
 {
     Board *this = (Board *)obj;
     struct SDL_Rect r = {0, 0, RECT_SIZE, RECT_SIZE};
-
     for (int i = 0; i < this->num_x; i++)
     {
         for (int k = 0; k < this->num_x; k++)
         {
+
             if (this->rects[i][k] == 1)
             {
-                SDL_SetRenderDrawColor(renderer, cyan.r, cyan.g, cyan.b, 0);
+                SDL_SetRenderDrawColor(renderer, gold.r, gold.g, gold.b, 0);
                 SDL_RenderFillRect(renderer, &r);
             }
 
@@ -71,7 +70,7 @@ static void _render(void *obj, struct SDL_Renderer *renderer)
         r.y += r.h;
     }
 
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+    SDL_SetRenderDrawColor(renderer, space_blue.r, space_blue.g, space_blue.b, 0);
 }
 
 /**
@@ -114,15 +113,14 @@ static void _rando(Board *this)
             if (num == 0)
             {
                 this->rects[i][k] = 1;
-                this->aux[i][k] = 1;
                 this->past[i][k] = 1;
             }
             else
             {
                 this->rects[i][k] = 0;
-                this->aux[i][k] = 0;
                 this->past[i][k] = 0;
             }
+            this->aux[i][k] = 0;
         }
     }
 }
@@ -216,7 +214,7 @@ static void _select_filled(Board *this, Mouse *mouse)
         mouse->clk_y = -1;
     }
 }
-static int life_(int **rects, int i, int k, int num)
+static int moore(int **rects, int i, int k, int num)
 {
     int neighbors;
     neighbors = 0;
@@ -230,16 +228,68 @@ static int life_(int **rects, int i, int k, int num)
     neighbors += check_neighbor_(i - 1, k - 1, rects, num);
     return neighbors;
 }
-static int brain(int **rects, int i, int k, int num)
+static int extended_moore(int **rects, int i, int k, int num, int range)
 {
+    int neighbors = 0;
+    for (int l = 1; l <= range; l++)
+    {
+        neighbors += check_neighbor_(i + l, k, rects, num);
+        neighbors += check_neighbor_(i, k + l, rects, num);
+        neighbors += check_neighbor_(i, k - l, rects, num);
+        neighbors += check_neighbor_(i - l, k, rects, num);
+        for (int j = 1; j <= range; j++)
+        {
+            neighbors += check_neighbor_(i + l, k + j, rects, num);
+            neighbors += check_neighbor_(i - l, k + j, rects, num);
+            neighbors += check_neighbor_(i + l, k - j, rects, num);
+            neighbors += check_neighbor_(i - l, k - j, rects, num);
+        }
+    }
+    return neighbors;
 }
+static void _bugs(Board *this, int rules[6])
+{
+    for (size_t i = 0; i < this->num_x; i++)
+    {
+        for (size_t k = 0; k < this->num_x; k++)
+        {
+            this->aux[i][k] = extended_moore(this->rects, i, k, this->num_x, rules[0]);
+        }
+    }
+    for (size_t i = 0; i < this->num_x; i++)
+    {
+        for (size_t k = 0; k < this->num_x; k++)
+        {
+            if (this->rects[i][k] == 0) //born
+            {
+                if (this->aux[i][k] >= rules[2] && this->aux[i][k] <= rules[3]) //loved
+                {
+                    this->rects[i][k] = 1;
+                }
+            }
+            else if (this->rects[i][k] == 1)
+            {
+                this->aux[i][k] += rules[1];
+                if (this->aux[i][k] >= rules[4] && this->aux[i][k] <= rules[5]) //loved
+                {
+                    this->rects[i][k] = 1;
+                }
+                else if (this->aux[i][k] < rules[4] || this->aux[i][k] > rules[5]) //loved
+                {
+                    this->rects[i][k] = 0;
+                }
+            }
+        }
+    }
+}
+
 static void _brians(Board *this)
 {
     for (size_t i = 0; i < this->num_x; i++)
     {
         for (size_t k = 0; k < this->num_x; k++)
         {
-            this->aux[i][k] = life_(this->rects, i, k, this->num_x);
+            this->aux[i][k] = moore(this->rects, i, k, this->num_x);
         }
     }
     for (size_t i = 0; i < this->num_x; i++)
@@ -270,24 +320,22 @@ static void _gol(Board *this)
     {
         for (size_t k = 0; k < this->num_x; k++)
         {
-            this->aux[i][k] = life_(this->rects, i, k, this->num_x);
+            this->aux[i][k] = moore(this->rects, i, k, this->num_x);
         }
     }
     for (size_t i = 0; i < this->num_x; i++)
     {
         for (size_t k = 0; k < this->num_x; k++)
         {
-            if (this->rects[i][k] == 0 && (this->aux[i][k] == three || this->aux[i][k] == 9)) //born
+            if (this->rects[i][k] == 0 && (this->aux[i][k] == three)) //born
             {
                 this->rects[i][k] = 1;
-                this->past[i][k]++;
             }
             else if (this->rects[i][k] == 1)
             {
                 if (this->aux[i][k] == three || this->aux[i][k] == two) //loved
                 {
                     this->rects[i][k] = 1;
-                    this->past[i][k]++;
                 }
                 else if (this->aux[i][k] > three || this->aux[i][k] < two) //lonley/murdered
                     this->rects[i][k] = 0;
@@ -304,6 +352,7 @@ Board *board_create(int w, int h)
     this->select_filled = _select_filled;
     this->gol = _gol;
     this->brians = _brians;
+    this->bugs = _bugs;
     this->clear = _clear;
     this->get_index = _get_index;
     this->rando = _rando;

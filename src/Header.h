@@ -3,7 +3,7 @@
 
 #define WINDOW_WIDTH 1920
 #define WINDOW_HEIGHT 1080
-#define BOARD_SIZE 1000
+#define BOARD_SIZE 1000 
 
 #define FPS 60
 
@@ -26,17 +26,21 @@ Uint8 *key_state;
 extern int show_box;
 int show_box;
 
+extern int print_n;
+int print_n;
 extern int X;
 extern int Y;
 int X;
 int Y;
 
 extern SDL_Color blue;
+extern SDL_Color space_blue;
 extern SDL_Color white;
 extern SDL_Color past;
 extern SDL_Color red;
 extern SDL_Color grey;
 extern SDL_Color cyan;
+extern SDL_Color gold;
 
 SDL_Color blue;
 SDL_Color white;
@@ -44,6 +48,8 @@ SDL_Color past;
 SDL_Color red;
 SDL_Color grey;
 SDL_Color cyan;
+SDL_Color gold;
+SDL_Color space_blue;
 
 enum KEYS
 {
@@ -63,13 +69,13 @@ enum KEYS
 enum game_state
 {
     choose,
-    gol,
-    brian
+    gol
 } state;
 
 enum current_game
 {
     con,
+    bug,
     bri
 } CURRENT_GAME;
 enum UI_states

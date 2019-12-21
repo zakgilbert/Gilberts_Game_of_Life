@@ -19,10 +19,11 @@
 #include "Line.h"
 
 #define controlls "Controlls, they will help you"
-#define welcome "Welcome to Life"
+#define welcome "Welcome to Conways Game of Life"
 #define running "Game is Running"
 #define paused "Game is Paused"
 #define brians "Welcome to Brians Brain"
+#define bugs_message "Welcome tp Bugs"
 
 const char *rules[13] = {
     "In conways universe survival",
@@ -39,14 +40,15 @@ const char *rules[13] = {
     "    4. A dead cell with three",
     "       neighbors is given life."};
 const char *
-    con_trolls_letters[8] = {"R", "Q", "C", "S", "D", "F", "Left", "Right"};
-const char *con_trolls_words[8] = {
+    con_trolls_letters[9] = {"R", "Q", "C", "S", "D", "F", "B", "Left", "Right"};
+const char *con_trolls_words[9] = {
     "Random",
     "Quit",
     "Clear",
     "Start",
     "Pause",
     "Full Screen",
+    "Switch Game",
     "Increase Size",
     "Decrease Size"};
 
@@ -61,6 +63,7 @@ static void _render(void *obj, SDL_Renderer *renderer)
 {
     Interface *this = (Interface *)obj;
     this->cursor(this, renderer);
+    SDL_SetRenderDrawColor(renderer, space_blue.r, space_blue.g, space_blue.b, 0);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 }
 static void _cursor(Interface *this, SDL_Renderer *renderer)
@@ -88,10 +91,12 @@ static Render_Q *_words(Interface *this, Render_Q *q, Atlas *atlas)
     int x_let = x + 200;
     if (CURRENT_GAME == con)
         q->enqueue(q, q->create_node(CREATE_LINE(atlas, welcome, x + 60, 40, 2), render_line));
-    else
+    else if (CURRENT_GAME == bri)
         q->enqueue(q, q->create_node(CREATE_LINE(atlas, brians, x + 60, 40, 2), render_line));
+    else if (CURRENT_GAME == bug)
+        q->enqueue(q, q->create_node(CREATE_LINE(atlas, bugs_message, x + 60, 40, 2), render_line));
 
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 9; i++)
     {
         q->enqueue(q, q->create_node(CREATE_LINE(atlas, con_trolls_words[i], x, y, 2), render_line));
         q->enqueue(q, q->create_node(CREATE_LINE(atlas, con_trolls_letters[i], x_let, y, 2), render_line));
