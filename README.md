@@ -1,6 +1,8 @@
 # Gilberts_Game_of_Life
 A simple GUI which allows you too create and view the results of cellular automata Conway's Game of Life, Bugs, and Brians Brain.
-![alt text](https://github.com/zakgilbert/Gilberts_Game_of_Life/image1 "Logo Title Text 1")
+
+![Brains Brain](https://github.com/zakgilbert/Gilberts_Game_of_Life/blob/master/image2.png "")
+
 ### Controls
 - Left-Click ___________ Fill Cell 
 - r __________________ Fill Random Cells
@@ -12,3 +14,6 @@ A simple GUI which allows you too create and view the results of cellular automa
 - Left arrow ___________ Decrease Cell Size
 - Right arrow __________ Increase Cell Size
 - b __________________ Switch Game 
+
+![Brains Brain](https://github.com/zakgilbert/Gilberts_Game_of_Life/blob/master/image1.png "")
+![Brains Brain](https://github.com/zakgilbert/Gilberts_Game_of_Life/blob/master/image3.png "")
