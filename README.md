@@ -1,5 +1,5 @@
 # Gilberts_Game_of_Life
-A simple GUI which allows you too create and view the results of cellular automata Conway's Game of Life, Bugs, and Brians Brain.
+A simple GUI which allows you too create and view the results of cellular automaton Conway's Game of Life, Bugs, and Brians Brain.
 
 ![Brains Brain](https://github.com/zakgilbert/Gilberts_Game_of_Life/blob/master/image2.png "")
 
