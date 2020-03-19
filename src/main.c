@@ -15,14 +15,14 @@
 #include "Board.h"
 #include "Mouse.h"
 #include "Interface.h"
-int color_decre = 1;
-int rules_gol[6] = {1, 0, 3, 3, 2, 3};
-int rules_bugs[6] = {5, 1, 34, 45, 34, 58};
-int rules_bugs_movie[6] = {10, 1, 123, 170, 123, 212};
-int rules_gnarl[6] = {8, 0, 74, 252, 163, 223};
+int color_decre         = 1;
+int rules_gol[6]        = { 1, 0, 3, 3, 2, 3 };
+int rules_bugs[6]       = { 5, 1, 34, 45, 34, 58 };
+int rules_bugs_movie[6] = { 10, 1, 123, 170, 123, 212 };
+int rules_gnarl[6]      = { 8, 0, 74, 252, 163, 223 };
 static SDL_Color set_color(int r, int g, int b)
 {
-    SDL_Color color = {r, g, b};
+    SDL_Color color = { r, g, b };
     return color;
 }
 static void adjust_color(int frames_rendered)
@@ -32,16 +32,12 @@ static void adjust_color(int frames_rendered)
         color_decre = 1;
     else if (col > 34)
         color_decre = 0;
-    if (frames_rendered % 2 == 0)
-    {
-        if (color_decre == 1)
-        {
+    if (frames_rendered % 2 == 0) {
+        if (color_decre == 1) {
             grey.r++;
             grey.g++;
             grey.b++;
-        }
-        else if (color_decre == 0)
-        {
+        } else if (color_decre == 0) {
             grey.r--;
             grey.g--;
             grey.b--;
@@ -51,8 +47,8 @@ static void adjust_color(int frames_rendered)
 static void set_globals()
 {
     RECT_SIZE = BLOCK;
-    key_state = (Uint8 *)SDL_GetKeyboardState(NULL);
-    quit = 0;
+    key_state = (Uint8*)SDL_GetKeyboardState(NULL);
+    quit      = 0;
 
     white = set_color(255, 255, 255);
 
@@ -70,12 +66,12 @@ static void set_globals()
 
     show_box = 1;
 
-    state = choose;
+    state        = choose;
     choose_state = squares;
 
     CURRENT_GAME = con;
 }
-static void set_full_screen(int full_screen, SDL_Window *window)
+static void set_full_screen(int full_screen, SDL_Window* window)
 {
     if (full_screen)
         SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
@@ -83,37 +79,35 @@ static void set_full_screen(int full_screen, SDL_Window *window)
         SDL_SetWindowFullscreen(window, 0);
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
-    {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
         printf("error creating renderer: %s\n", SDL_GetError());
         return 1;
     }
+    printf("HelloWorld");
     srand(time(0));
-    struct SDL_Window *window = NULL;
-    struct SDL_Renderer *renderer = NULL;
-    window = make_window("Window");
-    renderer = make_renderer(&window);
+    struct SDL_Window* window     = NULL;
+    struct SDL_Renderer* renderer = NULL;
+    window                        = make_window("Window");
+    renderer                      = make_renderer(&window);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
     SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
-
     set_up_timer();
     set_globals();
-    Render_Q *render_q = render_q_create();
-    Atlas *atlas = CREATE_ATLAS(150);
+    Render_Q* render_q = render_q_create();
+    Atlas* atlas       = CREATE_ATLAS(150);
 
-    Board *board = board_create(RECT_SIZE, RECT_SIZE);
-    Mouse *mouse = mouse_create(RECT_SIZE);
-    Interface *ui = interface_create();
+    Board* board  = board_create(RECT_SIZE, RECT_SIZE);
+    Mouse* mouse  = mouse_create(RECT_SIZE);
+    Interface* ui = interface_create();
 
     atlas->map(atlas, renderer);
     union SDL_Event ev;
     int frames_renderered = 0;
-    int full_screen = 0;
-    while (!quit)
-    {
+    int full_screen       = 0;
+    while (!quit) {
         start_timer();
 
         render_q->enqueue(render_q, render_q->create_node(board, board->render));
@@ -123,10 +117,8 @@ int main(int argc, char **argv)
         render_q = render_q->execute(render_q, renderer);
         SDL_RenderPresent(renderer);
 
-        while (SDL_PollEvent(&ev) != 0)
-        {
-            switch (ev.type)
-            {
+        while (SDL_PollEvent(&ev) != 0) {
+            switch (ev.type) {
             case SDL_QUIT:
                 quit = 1;
                 break;
@@ -134,12 +126,10 @@ int main(int argc, char **argv)
                 break;
             }
         }
-        switch (state)
-        {
+        switch (state) {
 
         case gol:
-            switch (CURRENT_GAME)
-            {
+            switch (CURRENT_GAME) {
             case con:
                 board->bugs(board, rules_gol);
                 break;
@@ -153,18 +143,14 @@ int main(int argc, char **argv)
                 break;
             }
             adjust_color(frames_renderered);
-            if (key_state[D])
-            {
+            if (key_state[D]) {
                 state = choose;
-            }
-            else if (key_state[V])
-            {
+            } else if (key_state[V]) {
                 board->add(board);
             }
             break;
         case choose:
-            switch (choose_state)
-            {
+            switch (choose_state) {
             case squares:
                 mouse->get_state(mouse);
                 mouse->on_click(mouse, state, board);
@@ -173,14 +159,14 @@ int main(int argc, char **argv)
             case smaller:
                 RECT_SIZE--;
                 board->destroy(board);
-                Board *temp_1 = board_create(RECT_SIZE, RECT_SIZE);
-                board = temp_1;
+                Board* temp_1 = board_create(RECT_SIZE, RECT_SIZE);
+                board         = temp_1;
                 break;
             case bigger:
                 RECT_SIZE++;
                 board->destroy(board);
-                Board *temp = board_create(RECT_SIZE, RECT_SIZE);
-                board = temp;
+                Board* temp = board_create(RECT_SIZE, RECT_SIZE);
+                board       = temp;
                 break;
             case start:
                 state = gol;
@@ -193,13 +179,10 @@ int main(int argc, char **argv)
                 board->rando(board);
                 break;
             case change:
-                if (CURRENT_GAME == bri)
-                {
+                if (CURRENT_GAME == bri) {
                     CURRENT_GAME = con;
                     board->clear(board);
-                }
-                else
-                {
+                } else {
                     CURRENT_GAME++;
                 }
                 break;
@@ -218,19 +201,14 @@ int main(int argc, char **argv)
                 choose_state = rando;
             else if (key_state[Q])
                 quit = 1;
-            else if (key_state[F])
-            {
-                full_screen = !full_screen;
+            else if (key_state[F]) {
+                full_screen  = !full_screen;
                 key_state[F] = 0;
                 set_full_screen(full_screen, window);
-            }
-            else if (key_state[G])
-            {
+            } else if (key_state[G]) {
                 key_state[G] = 0;
-                show_box = !show_box;
-            }
-            else if (key_state[B])
-            {
+                show_box     = !show_box;
+            } else if (key_state[B]) {
                 key_state[B] = 0;
                 choose_state = change;
             }
