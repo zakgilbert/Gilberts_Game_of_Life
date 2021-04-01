@@ -1,4 +1,3 @@
-
 EXCEC = game
 
 SRCDIR  = src 
@@ -10,7 +9,7 @@ HDRS    := $(shell find $(SRCDIR) -name '*.h')
 SRCDIRS := $(shell find . -name '*.c' -exec dirname {} \; | uniq)
 OBJS    := $(patsubst %.c,$(OBJDIR)/%.o,$(SRCS))
 
-CFLAGS := -Wall -ggdb3
+CFLAGS := -Wall -ggdb3 -fcommon
 
 LDFLAGS := `sdl2-config --libs --cflags` -lSDL2_image -lm
 
@@ -37,3 +36,4 @@ define make-repo
 	mkdir -p $(OBJDIR)/$$dir; \
    done
 endef
+

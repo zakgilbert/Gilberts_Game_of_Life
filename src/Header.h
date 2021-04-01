@@ -3,7 +3,7 @@
 
 #define WINDOW_WIDTH 1920
 #define WINDOW_HEIGHT 1080
-#define BOARD_SIZE 1000 
+#define BOARD_SIZE 1000
 
 #define FPS 60
 
@@ -20,8 +20,8 @@ int LAST_Y;
 
 extern int quit;
 int quit;
-extern Uint8 *key_state;
-Uint8 *key_state;
+extern Uint8* key_state;
+Uint8* key_state;
 
 extern int show_box;
 int show_box;
@@ -51,35 +51,31 @@ SDL_Color cyan;
 SDL_Color gold;
 SDL_Color space_blue;
 
-enum KEYS
-{
-    S = SDL_SCANCODE_S,
-    D = SDL_SCANCODE_D,
-    C = SDL_SCANCODE_C,
-    LEFT = SDL_SCANCODE_LEFT,
+enum KEYS {
+    S     = SDL_SCANCODE_S,
+    D     = SDL_SCANCODE_D,
+    C     = SDL_SCANCODE_C,
+    LEFT  = SDL_SCANCODE_LEFT,
     RIGHT = SDL_SCANCODE_RIGHT,
-    R = SDL_SCANCODE_R,
-    Q = SDL_SCANCODE_Q,
-    G = SDL_SCANCODE_G,
-    V = SDL_SCANCODE_V,
-    F = SDL_SCANCODE_F,
-    B = SDL_SCANCODE_B
+    R     = SDL_SCANCODE_R,
+    Q     = SDL_SCANCODE_Q,
+    G     = SDL_SCANCODE_G,
+    V     = SDL_SCANCODE_V,
+    F     = SDL_SCANCODE_F,
+    B     = SDL_SCANCODE_B
 } key;
 
-enum game_state
-{
+enum game_state {
     choose,
     gol
 } state;
 
-enum current_game
-{
+enum current_game {
     con,
     bug,
     bri
 } CURRENT_GAME;
-enum UI_states
-{
+enum UI_states {
     squares,
     smaller,
     bigger,
@@ -89,4 +85,4 @@ enum UI_states
     change
 } choose_state;
 
-#endif
+#endif /* HEADER_H */
