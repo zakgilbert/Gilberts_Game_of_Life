@@ -1,8 +1,3 @@
-
-/************************
-	 *  Mouse.c  ^. .^
-    */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,16 +8,12 @@
 #include "Mouse.h"
 #include "Board.h"
 
-/* Free memory allocated for Mouse object */
 static void _destroy(Mouse *this)
 {
     if (NULL == this)
         free(this);
 }
 
-/**
- * Get the mouse x cordinate after click such that the value returned is the x cordinate of the rectangle where the click occurred.
- */
 static int _get_x(Mouse *this)
 {
     int result;
@@ -31,9 +22,6 @@ static int _get_x(Mouse *this)
     return result;
 }
 
-/**
- * Get the mouse y cordinate after click such that the value returned is the y cordinate of the rectangle where the click occurred.
- */
 static int _get_y(Mouse *this)
 {
     int result;
@@ -42,7 +30,6 @@ static int _get_y(Mouse *this)
     return result;
 }
 
-/* If a valid click has occurred set the mouse coordinates and return true, else return false */
 static int _on_click(Mouse *this, int state, Board *board)
 {
     if (this->lock && SDL_BUTTON(SDL_BUTTON_LEFT) && !state)
@@ -55,7 +42,6 @@ static int _on_click(Mouse *this, int state, Board *board)
     return 0;
 }
 
-/* Call the SDL_GetMouseState function */
 static void _get_state(Mouse *this)
 {
     this->lock = SDL_GetMouseState(&this->x, &this->y);

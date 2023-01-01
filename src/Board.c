@@ -1,7 +1,7 @@
 
 /************************
-	 *  board.c
-	*/
+ *  board.c
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -145,7 +145,7 @@ static void _add(Board *this)
 }
 
 /**
- * Starting board 
+ * Starting board
  */
 static void _set_rects(Board *this)
 {
@@ -260,9 +260,9 @@ static void _bugs(Board *this, int rules[6])
     {
         for (size_t k = 0; k < this->num_x; k++)
         {
-            if (this->rects[i][k] == 0) //born
+            if (this->rects[i][k] == 0) // born
             {
-                if (this->aux[i][k] >= rules[2] && this->aux[i][k] <= rules[3]) //loved
+                if (this->aux[i][k] >= rules[2] && this->aux[i][k] <= rules[3]) // loved
                 {
                     this->rects[i][k] = 1;
                 }
@@ -270,11 +270,11 @@ static void _bugs(Board *this, int rules[6])
             else if (this->rects[i][k] == 1)
             {
                 this->aux[i][k] += rules[1];
-                if (this->aux[i][k] >= rules[4] && this->aux[i][k] <= rules[5]) //loved
+                if (this->aux[i][k] >= rules[4] && this->aux[i][k] <= rules[5]) // loved
                 {
                     this->rects[i][k] = 1;
                 }
-                else if (this->aux[i][k] < rules[4] || this->aux[i][k] > rules[5]) //loved
+                else if (this->aux[i][k] < rules[4] || this->aux[i][k] > rules[5]) // loved
                 {
                     this->rects[i][k] = 0;
                 }
@@ -296,7 +296,7 @@ static void _brians(Board *this)
     {
         for (size_t k = 0; k < this->num_x; k++)
         {
-            if (this->rects[i][k] == 0 && (this->aux[i][k] == 2)) //born
+            if (this->rects[i][k] == 0 && (this->aux[i][k] == 2)) // born
             {
                 this->rects[i][k] = 1;
                 this->past[i][k]++;
@@ -327,17 +327,17 @@ static void _gol(Board *this)
     {
         for (size_t k = 0; k < this->num_x; k++)
         {
-            if (this->rects[i][k] == 0 && (this->aux[i][k] == three)) //born
+            if (this->rects[i][k] == 0 && (this->aux[i][k] == three)) // born
             {
                 this->rects[i][k] = 1;
             }
             else if (this->rects[i][k] == 1)
             {
-                if (this->aux[i][k] == three || this->aux[i][k] == two) //loved
+                if (this->aux[i][k] == three || this->aux[i][k] == two) // loved
                 {
                     this->rects[i][k] = 1;
                 }
-                else if (this->aux[i][k] > three || this->aux[i][k] < two) //lonley/murdered
+                else if (this->aux[i][k] > three || this->aux[i][k] < two) // lonley
                     this->rects[i][k] = 0;
             }
         }
